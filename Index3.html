@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>บันทึกรายรับรายจ่าย</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>บันทึกรายรับ-รายจ่าย</h2>
+    <form id="expenseForm">
+      <label>ประเภท:</label>
+      <select name="type" required>
+        <option value="Income">รายรับ</option>
+        <option value="Expense">รายจ่าย</option>
+      </select>
+      
+      <label>หมวดหมู่:</label>
+      <input type="text" name="category" placeholder="เช่น อาหาร, เดินทาง" required>
+      
+      <label>จำนวนเงิน:</label>
+      <input type="number" name="amount" required>
+      
+      <label>บันทึกเพิ่มเติม:</label>
+      <textarea name="note"></textarea>
+      
+      <button type="submit">บันทึก</button>
+    </form>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwjY0yRZbsfo2Idca2VFLL1x3TAHuJ-C54UEd6otnQre7rU4GHE9PAK1DnjuIjugvvu/exec"; // 👈 วาง URL ที่ได้จากขั้นตอนที่ 2
+
+    document.getElementById("expenseForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+      .then(res => res.text())
+      .then(response => {
+        document.getElementById("status").innerText = "✅ บันทึกสำเร็จ!";
+        e.target.reset();
+      })
+      .catch(error => {
+        document.getElementById("status").innerText = "❌ เกิดข้อผิดพลาด: " + error;
+      });
+    });
+  </script>
+</body>
+</html>
